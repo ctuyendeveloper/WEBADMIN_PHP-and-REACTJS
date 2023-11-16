@@ -1,0 +1,34 @@
+    .container {
+    max-width: 600px;
+    margin: auto;
+    background-color: #ecf0f1; /* Màu xám nhạt cho phần nền của container */
+    padding: 20px; /* Thêm padding để làm đẹp hơn */
+    border-radius: 8px; /* Bo tròn các góc của container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+  }
+  
+  .label {
+    font-weight: bold;
+  }
+  
+  .controladd {
+    margin-bottom: 15px;
+    border-color: #3498db; /* Màu viền cho input */
+  }
+  input.form-control-add {
+    resize: vertical;
+  }
+  
+  textarea.form-control-add {
+    resize: vertical;
+  }
+  
+  .btn-primary-add {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  /* Hiệu ứng hover cho nút thêm mới */
+  .btn-primary-add:hover {
+    background-color: #0056b3;
+  }
