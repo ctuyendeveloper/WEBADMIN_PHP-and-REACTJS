@@ -6,6 +6,10 @@ const List = (props) => {
     const navigate = useNavigate();
     const [news, setNews] = useState([]);
 
+    const [topicid, setTopicid] = useState([]);
+
+
+    // switch case chuyển màn hình
     const handleClick = (action, id) => {
         switch (action) {
             case 'add':
@@ -23,6 +27,8 @@ const List = (props) => {
                 break;
         }
     };
+    
+    // nút xóa
     const handleDelete = async (id) => {
         // Hiển thị hộp thoại xác nhận
         const confirmDelete = window.confirm('Bạn có chắc chắn muốn xóa?');
@@ -36,14 +42,22 @@ const List = (props) => {
         }
     };
 
+    // load data từ api getnew và gettopic
     useEffect(() => {
         const fetchData = async () => {
             const result = await AxiosInstance().get('/get-news.php');
             setNews(result);
-            console.log("asd",result)
+            const result2 = await AxiosInstance().get('/get-topics.php');
+            setTopicid(result2);
         }
         fetchData();
     }, []);
+
+    // lấy topic_id.name
+    const getTopicName = (topicId) => {
+        const topic = topicid.find((topic) => topic.id === topicId);
+        return topic ? topic.name : null;
+      };
 
     return (
         <div className="containerlist mt-5">
@@ -55,8 +69,10 @@ const List = (props) => {
                         <th>Title</th>
                         <th>Content</th>
                         <th>Ảnh</th>
+                        <th>Topic</th>
                         <th>Chỉnh sửa</th>
                         <th>Ngày tạo</th>
+                        <th>Người tạo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,11 +85,14 @@ const List = (props) => {
                                 <td>
                                     <img src={item.image} style={{ maxWidth: '100px', maxHeight: '100px' }} />
                                 </td>
+                                <td>{getTopicName(item.topic_id) || 'Unknown'}</td>
+                                {/* <td>{topicid.find((topic) => topic.id === item.topic_id)?.name || 'Unknown'}</td> */}
                                 <td>
                                     <a className="btn btn-primary" style={{ marginRight: '5%' }} onClick={() => handleClick('edit', item.id)}>Sửa</a>
                                     <button className="btn btn-danger" onClick={() => handleClick('delete', item.id)}>Xóa</button>
                                 </td>
                                 <td>{item.created_at}</td>
+                                <td>{item.user_id}</td>
                             </tr>
                         ))
                     }

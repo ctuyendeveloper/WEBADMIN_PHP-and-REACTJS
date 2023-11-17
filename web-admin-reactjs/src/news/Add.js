@@ -1,4 +1,4 @@
-import React, { useState, Alert } from "react";
+import React, { useState, Alert, useEffect } from "react";
 import AxiosInstance from '../helper/AxiosInstance';
 import { format } from 'date-fns';
 
@@ -38,42 +38,66 @@ const Add = () => {
   const formattedDate = format(new Date, 'HH:mm:ss dd-MM-yyyy');
   const [date, setDate] = useState(formattedDate);
   const [userid, setUserid] = useState('');
-  const [topicid, setTopicid] = useState('');
+  const [topicid, setTopicid] = useState([]);
+  const [topic_id, setTopic_id] = useState(1);
+
+  const [imagePreview, setimagePreview] = useState(null);
 
 
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   setNewData((prevData) => ({ ...prevData, image: file }));
-  // };
+  // hàm nhận diện sự thay đổi của image
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setimagePreview(URL.createObjectURL(file))
+    const formData = new FormData();
+    formData.append('image', file);
+    const uploadResponse = await fetch("http://127.0.0.1:8686/upload-file.php", {
+      method: "POST",
+      body: formData,
+    });
+    // console.log("asdasd2", uploadResponse)
+    const uploadResult = await uploadResponse.json();
+    setPicture(uploadResult.path);
+  }
+  
+
+  // load data của api get topic
+  useEffect(() => {
+    const fetchtopics = async () => {
+      const result = await AxiosInstance().get('/get-topics.php');
+      setTopicid(result);
+    }
+    fetchtopics();
+  }, [])
 
 
+
+  // hàm thêm dữ liệu
   const handleAddData = async () => {
     try {
 
-      const formData = new FormData();
-      formData.append('image', picture);
-      const uploadResponse = await fetch("http://127.0.0.1:8686/upload-file.php", {
-        method: "POST",
-        body: formData,
-    });
-    // console.log("asdasd2", uploadResponse)
-      const uploadResult = await uploadResponse.json();
-      const uploadResult2 = uploadResult.path;
+      // bắt validate
+      if (!editedContent || !editedTitle || !picture) {
+        alert('Nhap du thong tin di')
+        return;
+      }
       // console.log("asdasd", uploadResult2)
       // const uploadResult2 = uploadResult.path;
       // console.log("asdasd", uploadResult2)
 
+      // gọi api thêm dữ liệu
       const response = await AxiosInstance().post('/add-news.php', {
         title: editedTitle,
         content: editedContent,
-        created_at : date,
-        image : uploadResult2,
-        topic_id : topicid,
-        user_id : userid,
+        created_at: date,
+        image: picture,
+        topic_id: topic_id,
+        user_id: userid,
       });
-      console.log("test res: ", response.data.image)
+      // console.log("test res: ", response.data.image)
       // response.data.image = uploadResult2
 
+      // status thêm thành công
       if (response.status === 200) {
         // console.log("test status: ", response.data)
         alert("Thêm thành công")
@@ -84,11 +108,11 @@ const Add = () => {
         setPicture('')
         setDate(formattedDate)
         setUserid('')
-        setTopicid('')
+        window.location.href = '/';
       } else {
         // console.log("a", response)
-        console.error('Lỗi khi thêm dữ liệu:1', response.data);
-        // alert("Thêm thất bại 1", response.data)
+        // console.error('Lỗi khi thêm dữ liệu:1', response.data);
+        alert("Thêm thất bại 1", response.data)
       }
     } catch (error) {
       alert("Thêm thất bại 2", error.message)
@@ -116,7 +140,10 @@ const Add = () => {
         value={editedContent} onChange={(e) => setEditedContent(e.target.value)}
       />
       <label className="form-label" style={labeladdStyles}>iamge test:</label>
-      <input type="file" src="" accept="image/*" onChange={(e) => setPicture(e.target.files[0])} />
+      <br />
+      <input type="file" accept="image/*" onChange={handleImageChange} />
+      <br />
+      <img src={imagePreview} width={100} height={100} />
       <br />
       <label className="form-label" style={labeladdStyles}>Date</label>
       <textarea
@@ -133,12 +160,15 @@ const Add = () => {
         value={userid} onChange={(e) => setUserid(e.target.value)}
       />
       <label className="form-label" style={labeladdStyles}>topic_id:</label>
-      <textarea
-        name="topic_id"
-        style={inputaddStyles}
-        className="form-control-add"
-        value={topicid} onChange={(e) => setTopicid(e.target.value)}
-      />
+      <br />
+      <select value={topic_id} onChange={(e) => setTopic_id(e.target.value)}>
+        {
+          topicid.map((item, index) => (
+            <option value={item.id} key={index}>{item.name}</option>
+          ))
+        }
+      </select>
+      <br />
 
 
       {/* Button to trigger the API call */}
