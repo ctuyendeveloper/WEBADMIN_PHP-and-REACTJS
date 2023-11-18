@@ -3,7 +3,8 @@ import AxiosInstance from '../helper/AxiosInstance';
 import { format } from 'date-fns';
 
 
-const Add = () => {
+const Add = (props) => {
+  const { user } = props;
 
   // css
   const containeraddStyles = {
@@ -37,7 +38,7 @@ const Add = () => {
 
   const formattedDate = format(new Date, 'HH:mm:ss dd-MM-yyyy');
   const [date, setDate] = useState(formattedDate);
-  const [userid, setUserid] = useState('');
+  const [userid, setUserid] = useState(user);
   const [topicid, setTopicid] = useState([]);
   const [topic_id, setTopic_id] = useState(1);
 
@@ -59,13 +60,14 @@ const Add = () => {
     const uploadResult = await uploadResponse.json();
     setPicture(uploadResult.path);
   }
-  
+
 
   // load data của api get topic
   useEffect(() => {
     const fetchtopics = async () => {
       const result = await AxiosInstance().get('/get-topics.php');
       setTopicid(result);
+      // const newsItem = Array.isArray(user) ? user[0] : user;
     }
     fetchtopics();
   }, [])
@@ -92,7 +94,7 @@ const Add = () => {
         created_at: date,
         image: picture,
         topic_id: topic_id,
-        user_id: userid,
+        user_id: userid.ID,
       });
       // console.log("test res: ", response.data.image)
       // response.data.image = uploadResult2
@@ -107,7 +109,7 @@ const Add = () => {
         setEditedContent('')
         setPicture('')
         setDate(formattedDate)
-        setUserid('')
+        // setUserid('')
         window.location.href = '/';
       } else {
         // console.log("a", response)
@@ -152,13 +154,6 @@ const Add = () => {
         className="form-control-add"
         value={date} onChange={(e) => setDate(e.target.value)}
       />
-      <label className="form-label" style={labeladdStyles}>user_id:</label>
-      <textarea
-        name="user_id"
-        style={inputaddStyles}
-        className="form-control-add"
-        value={userid} onChange={(e) => setUserid(e.target.value)}
-      />
       <label className="form-label" style={labeladdStyles}>topic_id:</label>
       <br />
       <select value={topic_id} onChange={(e) => setTopic_id(e.target.value)}>
@@ -168,6 +163,9 @@ const Add = () => {
           ))
         }
       </select>
+      <br />
+      <br />
+      <label className="form-label">Người đăng: {userid.NAME}</label>
       <br />
 
 

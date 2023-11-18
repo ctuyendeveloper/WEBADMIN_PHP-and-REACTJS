@@ -4,7 +4,8 @@ import AxiosInstance from '../helper/AxiosInstance';
 import { format } from 'date-fns';
 
 
-const Edit = () => {
+const Edit = (props) => {
+  const { user } = props;
 
   // css
   const containeraddStyles = {
@@ -37,7 +38,8 @@ const Edit = () => {
   const [editedContent, setEditedContent] = useState('');
   const [picture, setPicture] = useState();
   const [date, setDate] = useState('');
-  const [userid, setUserid] = useState('');
+  const [userid, setUserid] = useState(user);
+  const [userid2, setUserid2] = useState();
   const [topicid, setTopicid] = useState([]);
   const [topic_id, setTopic_id] = useState();
 
@@ -65,9 +67,9 @@ const Edit = () => {
     const fetchData = async () => {
       try {
         const result = await AxiosInstance().get(`/get-news-detail.php?id=${id}`);
-        console.log("TEst", result);
+        // console.log("TEst", result);
         const newsItem = Array.isArray(result) ? result[0] : result;
-        console.log("TEst", newsItem.image);
+        // console.log("TEst", newsItem.image);
 
         const formattedDate = format(new Date, 'HH:mm:ss dd-MM-yyyy');
         // const fileName = newsItem.image.split('/').pop();
@@ -80,7 +82,8 @@ const Edit = () => {
         // setPicture('asdasd');
         setimagePreview(newsItem.image);
         setTopic_id(newsItem.topic_id);
-        setUserid(newsItem.user_id);
+        setUserid2(newsItem.user_id);
+        console.log("ASDASDASDASDASD", userid2)
         // setPicture(newsItem.image); // nó đang là null
         setDate(formattedDate);
       } catch (error) {
@@ -93,19 +96,42 @@ const Edit = () => {
   // Hàm click button save
   const handleSave = async () => {
     try {
+      if (userid.ID == userid2) {
+        // gọi api edit
+        await AxiosInstance().put(`/update-news.php?id=${id}`, {
+          title: editedTitle,
+          content: editedContent,
+          created_at: date,
+          image: picture,
+          topic_id: topic_id,
+          user_id: userid.ID,
+        });
+        // console.log("test", a)
+        // Handle success, maybe redirect or show a success message
+        alert("Cập nhật thành công")
+        window.location.href = '/';
+      }
+      else {
+        const confirmDelete = window.confirm('Bạn không phải là chủ của bài đăng bạn có muốn tiếp tục sửa không?');
 
-      // gọi api edit
-      await AxiosInstance().put(`/update-news.php?id=${id}`, {
-        title: editedTitle,
-        content: editedContent,
-        created_at: date,
-        image : picture,
-        topic_id: topic_id,
-        user_id: userid,
-      });
-      // console.log("test", a)
-      // Handle success, maybe redirect or show a success message
-      alert("Cập nhật thành công")
+        if (confirmDelete) {
+          await AxiosInstance().put(`/update-news.php?id=${id}`, {
+            title: editedTitle,
+            content: editedContent,
+            created_at: date,
+            image: picture,
+            topic_id: topic_id,
+            user_id: userid.ID,
+          });
+          // console.log("test", a)
+          // Handle success, maybe redirect or show a success message
+          alert("Cập nhật thành công")
+          window.location.href = '/';
+        }
+        else {
+          window.location.href = '/';
+        }
+      }
     } catch (error) {
       console.error('Error updating data:', error);
     }
@@ -122,7 +148,7 @@ const Edit = () => {
       <input style={inputaddStyles} value={editedContent} onChange={(e) => setEditedContent(e.target.value)} />
       <label style={labeladdStyles}>Image</label>
       <br />
-      <input type="file" accept="image/*"  onChange={handleImageChange} />
+      <input type="file" accept="image/*" onChange={handleImageChange} />
       <br />
       <img src={imagePreview} width={100} height={100} />
       <br />
@@ -139,10 +165,10 @@ const Edit = () => {
         }
       </select>
       <br />
-      <label style={labeladdStyles}>User ID</label>
-      <input style={inputaddStyles} value={userid} onChange={(e) => setUserid(e.target.value)} />
       <br />
-      <button className="btn btn-primary" style={btnaddhoverStyles} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onClick={handleSave}>Save</button>
+      <label>Người sửa: {userid.NAME}</label>
+      <br />
+      <button className="btn btn-primary" style={btnaddhoverStyles} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onClick={handleSave}>Sửa</button>
       {/* Add your edit form or other components here */}
     </div>
   );

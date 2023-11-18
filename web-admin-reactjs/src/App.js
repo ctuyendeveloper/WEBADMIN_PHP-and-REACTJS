@@ -61,9 +61,9 @@ function App() {
           </Route>
           
           <Route element={<ProtectedRoute/>}>
-            <Route path="/" element={<List/>} />
-            <Route path="/add" element={<Add/>} />
-            <Route path="/edit/:id" element={<Edit/>} />
+            <Route path="/" element={<List user={user}/>} />
+            <Route path="/add" element={<Add user={user}/>} />
+            <Route path="/edit/:id" element={<Edit user={user}/>} />
           </Route>
         </Routes>
       </Router>
