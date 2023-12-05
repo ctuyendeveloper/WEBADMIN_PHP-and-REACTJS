@@ -7,6 +7,10 @@ import Login from './users/Login'
 import List from './news/List'
 import Add from './news/Add'
 import Edit from './news/Edit'
+import ResetPassword from './users/ResetPassword';
+import ListTopic from './topics/Listtp';
+import Addtp from './topics/Addtp';
+import Edittp from './topics/Edittp';
 
 function App() {
 
@@ -56,12 +60,16 @@ function App() {
     <div className="container">
       <Router>
         <Routes>
+        <Route path="/reset-password" element={<ResetPassword/>} />
           <Route element={<PubliceRoute/>}>
             <Route path="/login" element={<Login saveUser={saveUserToLocalStorage}/>} />
           </Route>
           
           <Route element={<ProtectedRoute/>}>
             <Route path="/" element={<List user={user}/>} />
+            <Route path="/list-topic" element={<ListTopic user={user}/>} />
+            <Route path="/addtp" element={<Addtp user={user}/>} />
+            <Route path="/edittp/:id" element={<Edittp user={user}/>} />
             <Route path="/add" element={<Add user={user}/>} />
             <Route path="/edit/:id" element={<Edit user={user}/>} />
           </Route>

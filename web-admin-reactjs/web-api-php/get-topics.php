@@ -10,7 +10,11 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 include_once './connection.php';
 // doc du lieu tu database
-$sqlQuery = "SELECT id, name, description FROM topics";
+$sqlQuery = "SELECT topics.id, topics.name, topics.description, topics.created_at, topics.user_id, users.NAME FROM topics
+INNER JOIN users ON topics.user_id = users.id ORDER BY topics.id";
+
+// $sqlQuery = "SELECT posts.id, posts.title, posts.content, posts.image, posts.created_at, users.NAME, topics.name 
+// FROM posts INNER JOIN users ON posts.user_id = users.id INNER JOIN topics ON posts.topic_id = topics.id ORDER BY posts.id";
 
 // thực thi câu lệnh
 

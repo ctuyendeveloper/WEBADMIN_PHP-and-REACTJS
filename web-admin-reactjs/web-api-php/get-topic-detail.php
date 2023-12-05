@@ -12,11 +12,11 @@ include_once './connection.php';
 // đọc id từ query string
 $id = $_GET['id'];
 // đọc dữ liệu từ database
-$sqlQuery = "SELECT posts.id, posts.title, posts.content, posts.image, posts.created_at, users.NAME, topics.id, topics.name, users.avatar FROM posts 
-INNER JOIN users ON posts.user_id = users.id INNER JOIN topics ON posts.topic_id = topics.id
-WHERE posts.id = $id ORDER BY topics.id";
+// $sqlQuery = "SELECT posts.id, posts.title, posts.content, posts.image, posts.created_at, users.NAME, topics.id, topics.name, users.avatar FROM posts 
+// INNER JOIN users ON posts.user_id = users.id INNER JOIN topics ON posts.topic_id = topics.id
+// WHERE posts.id = $id ORDER BY topics.id";
 // thực thi câu lệnh pdo
-// $sqlQuery = "SELECT id, title, content, image, created_at, user_id, topic_id FROM posts WHERE id = $id";
+$sqlQuery = "SELECT name, description, user_id FROM topics WHERE id = $id";
 
 $stmt = $dbConn->prepare($sqlQuery);
 $stmt->execute();

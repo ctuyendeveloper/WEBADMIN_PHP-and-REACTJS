@@ -23,7 +23,7 @@
                 array(
                     "error" => false,
                     "message" => "Upload successful",
-                    "path" => "http://127.0.0.1:8686/uploads/".$fileName
+                    "path" => "http://172.16.126.105:8686/uploads/".$fileName
                 )
             );
         } else {

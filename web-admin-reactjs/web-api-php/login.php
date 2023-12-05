@@ -24,7 +24,7 @@ try {
 
     // thêm mới dữ liệu
 
-    $sqlQuery = "SELECT * FROM users WHERE email = '$email' AND password = '$password' ";
+    $sqlQuery = "SELECT * FROM users WHERE email = '$email'";
 
 
     // thực thi câu lệnh pdo
@@ -39,6 +39,18 @@ try {
 
     if($user)
     {
+        // kiểm tra mật khẩu
+        $check = password_verify($password, $user['PASSWORD']);
+        if($check == false)
+        {
+            echo json_encode(
+                array(
+                "status" => false, // login thành công
+                "message" => "Mật khẩu không chính xác"
+                )
+            );
+            return;
+        }
         echo json_encode(
             array(
             "status" => true, // login thành công

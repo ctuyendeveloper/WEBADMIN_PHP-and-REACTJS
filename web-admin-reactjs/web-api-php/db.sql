@@ -1,4 +1,3 @@
-
 -- Tạo Database
 
 CREATE DATABASE IF NOT EXISTS `TEST`;
@@ -25,8 +24,23 @@ CREATE TABLE
         `ID` int(11) NOT NULL AUTO_INCREMENT,
         `NAME` varchar(255) NOT NULL,
         `DESCRIPTION` varchar(255) NOT NULL,
-        PRIMARY KEY (`ID`)
+        `USER_ID` int(11) NOT NULL,
+        `CREATED_AT` datetime DEFAULT NOW() NOT NULL,
+        PRIMARY KEY (`ID`),
+        FOREIGN KEY (`USER_ID`) REFERENCES `USERS`(`ID`)
     );
+
+-- tạo bảng password_resets(id, email, token, created_at, available)
+
+CREATE TABLE
+    IF NOT EXISTS `password_resets` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `email` varchar(255) NOT NULL,
+        `token` varchar(255) NOT NULL,
+        `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+        `available` tinyint(1) NOT NULL DEFAULT 1,
+        PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- tạo bảng POSTS(ID, TITLE, CONTENT, CREATED_AT, USER_ID, TOPIC_ID)
 
@@ -83,19 +97,31 @@ VALUES (
 -- thêm dữ liệu vào bảng TOPICS
 
 INSERT INTO
-    `TOPICS` (`ID`, `NAME`, `DESCRIPTION`)
+    `TOPICS` (
+        `ID`,
+        `NAME`,
+        `DESCRIPTION`,
+        `CREATED_AT`,
+        `USER_ID`
+    )
 VALUES (
         1,
         'PHP',
-        'PHP is a server scripting language'
+        'PHP is a server scripting language',
+        '2019-11-11 00:00:00',
+        3
     ), (
         2,
         'JAVA',
-        'Java is a high-level programming language '
+        'Java is a high-level programming language',
+        '2019-11-11 00:00:00',
+        3
     ), (
         3,
         'PYTHON',
-        'Python is a programming language'
+        'Python is a programming language',
+        '2019-11-11 00:00:00',
+        3
     );
 
 -- thêm dữ liệu vào bảng NEWS

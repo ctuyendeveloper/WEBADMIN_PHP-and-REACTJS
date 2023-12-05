@@ -42,35 +42,35 @@ const Add = (props) => {
   const [topicid, setTopicid] = useState([]);
   const [topic_id, setTopic_id] = useState(1);
 
-  const [imagePreview, setimagePreview] = useState(null);
+//   const [imagePreview, setimagePreview] = useState(null);
 
 
   // hàm nhận diện sự thay đổi của image
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setimagePreview(URL.createObjectURL(file))
-    const formData = new FormData();
-    formData.append('image', file);
-    const uploadResponse = await fetch("http://172.16.126.105:8686/upload-file.php", {
-      method: "POST",
-      body: formData,
-    });
-    // console.log("asdasd2", uploadResponse)
-    const uploadResult = await uploadResponse.json();
-    setPicture(uploadResult.path);
-  }
+//   const handleImageChange = async (e) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+//     setimagePreview(URL.createObjectURL(file))
+//     const formData = new FormData();
+//     formData.append('image', file);
+//     const uploadResponse = await fetch("http://10.0.2.25:8686/upload-file.php", {
+//       method: "POST",
+//       body: formData,
+//     });
+//     // console.log("asdasd2", uploadResponse)
+//     const uploadResult = await uploadResponse.json();
+//     setPicture(uploadResult.path);
+//   }
 
 
   // load data của api get topic
-  useEffect(() => {
-    const fetchtopics = async () => {
-      const result = await AxiosInstance().get('/get-topics.php');
-      setTopicid(result);
-      // const newsItem = Array.isArray(user) ? user[0] : user;
-    }
-    fetchtopics();
-  }, [])
+//   useEffect(() => {
+//     const fetchtopics = async () => {
+//       const result = await AxiosInstance().get('/get-topics.php');
+//       setTopicid(result);
+//       // const newsItem = Array.isArray(user) ? user[0] : user;
+//     }
+//     fetchtopics();
+//   }, [])
 
 
 
@@ -79,7 +79,7 @@ const Add = (props) => {
     try {
 
       // bắt validate
-      if (!editedContent || !editedTitle || !picture) {
+      if (!editedContent || !editedTitle) {
         alert('Nhap du thong tin di')
         return;
       }
@@ -88,12 +88,9 @@ const Add = (props) => {
       // console.log("asdasd", uploadResult2)
 
       // gọi api thêm dữ liệu
-      const response = await AxiosInstance().post('/add-news.php', {
-        title: editedTitle,
-        content: editedContent,
-        created_at: date,
-        image: picture,
-        topic_id: topic_id,
+      const response = await AxiosInstance().post('/add-topics.php', {
+        name: editedTitle,
+        description: editedContent,
         user_id: userid.ID,
       });
       // console.log("test res: ", response.data.image)
@@ -107,10 +104,8 @@ const Add = (props) => {
 
         setEditedTitle('')
         setEditedContent('')
-        setPicture('')
-        setDate(formattedDate)
         // setUserid('')
-        window.location.href = '/';
+        window.location.href = '/list-topic';
       } else {
         // console.log("a", response)
         console.log('Lỗi khi thêm dữ liệu:1', response);
@@ -141,20 +136,20 @@ const Add = (props) => {
         className="form-control-add"
         value={editedContent} onChange={(e) => setEditedContent(e.target.value)}
       />
-      <label className="form-label" style={labeladdStyles}>iamge test:</label>
+      {/* <label className="form-label" style={labeladdStyles}>iamge test:</label>
       <br />
       <input type="file" accept="image/*" onChange={handleImageChange} />
       <br />
       <img src={imagePreview} width={100} height={100} />
       <br />
-      <label className="form-label" style={labeladdStyles}>Date</label>
-      <textarea
+      <label className="form-label" style={labeladdStyles}>Date</label> */}
+      {/* <textarea
         name="user_id"
         style={inputaddStyles}
         className="form-control-add"
         value={date} onChange={(e) => setDate(e.target.value)}
-      />
-      <label className="form-label" style={labeladdStyles}>topic_id:</label>
+      /> */}
+      {/* <label className="form-label" style={labeladdStyles}>topic_id:</label>
       <br />
       <select value={topic_id} onChange={(e) => setTopic_id(e.target.value)}>
         {
@@ -162,9 +157,9 @@ const Add = (props) => {
             <option value={item.id} key={index}>{item.name}</option>
           ))
         }
-      </select>
-      <br />
-      <br />
+      </select> */}
+      {/* <br />
+      <br /> */}
       <label className="form-label">Người đăng: {userid.NAME}</label>
       <br />
 
